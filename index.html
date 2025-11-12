@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Granja Numérica | Guía del Juego (Funcional)</title>
+    <link rel="icon" type="image/png" href="Imagen/granja_logo.png" />
+
+    <!-- Tailwind y Lucide -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- jsPDF para generar PDF en cliente -->
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'gn-purple': '#6a1b9a',
+                        'gn-accent': '#8e24aa',
+                        'gn-bg-soft': '#f3e8ff',
+                    },
+                    fontFamily: {
+                        sans: ['Poppins','Inter','sans-serif'],
+                    }
+                }
+            }
+        };
+    </script>
+
+    <style>
+        body { font-family: 'Poppins', Inter, sans-serif; color:#1F2937; line-height:1.6; }
+        .section-separator { min-height:1rem; }
+        @media (min-width:1024px){ .comment-sidebar{ position:sticky; top:2rem; height:calc(100vh - 4rem); overflow-y:auto; } }
+
+        /* === ADICIONES PARA MEJORAR VISUAL DEL JUEGO (responsive + fullscreen) === */
+        .game-container {
+          position: relative;
+          width: 100%;
+          max-width: 1100px;
+          margin: 0 auto;
+          /* 16:9 default: padding-top 56.25% */
+          padding-top: 56.25%;
+          overflow: hidden;
+          border-radius: 15px;
+          box-shadow: 0 8px 30px rgba(106,27,154,0.15);
+          background-color: #000;
+        }
+
+        .game-container iframe {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          border: none;
+        }
+
+        /* Fullscreen CSS applied when container is set to fullscreen (via JS) */
+        .game-container.fullscreen {
+          position: fixed !important;
+          top: 0 !important;
+          left: 0 !important;
+          width: 100vw !important;
+          height: 100vh !important;
+          padding-top: 0 !important;
+          z-index: 9999;
+          border-radius: 0 !important;
+        }
+        .game-container.fullscreen iframe {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+        }
+
+        /* Fullscreen button */
+        .game-fullscreen-btn {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          z-index: 10010;
+        }
+
+        /* Mobile tweak: taller aspect on narrow screens so UI of Unity fits better */
+        @media (max-width:640px){
+          .game-container { padding-top: 75%; } /* 4:3-ish on small */
+        }
+        /* Small visual for loading state */
+        .game-loading-overlay {
+          position: absolute;
+          inset: 0;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          color:#fff;
+          font-weight:600;
+          background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.6));
+          z-index: 1000;
+        }
+
+        /* slight polish for comments list */
+        .comment-card { transition: transform .12s ease, box-shadow .12s ease; }
+        .comment-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 dark:text-gray-100">
+
+    <!-- Floating actions -->
+    <div class="fixed right-0 top-1/2 transform -translate-y-1/2 z-50 space-y-3 p-2">
+        <button id="theme-toggle" onclick="toggleDarkMode()" class="block bg-gn-purple p-3 rounded-full shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-110" aria-label="Alternar tema">
+            <i data-lucide="moon" id="theme-icon" class="w-6 h-6 text-white"></i>
+        </button>
+        <a href="https://wa.me/00000000000" target="_blank" class="block bg-green-500 p-3 rounded-full shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-110" aria-label="WhatsApp">
+            <i data-lucide="message-square-text" class="w-6 h-6 text-white"></i>
+        </a>
+        <a href="https://facebook.com" target="_blank" class="block bg-gn-accent p-3 rounded-full shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-110">
+            <i data-lucide="facebook" class="w-6 h-6 text-white"></i>
+        </a>
+        <a href="https://tiktok.com" target="_blank" class="block bg-black p-3 rounded-full shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-110">
+            <i data-lucide="square-play" class="w-6 h-6 text-white"></i>
+        </a>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-gn-purple shadow-lg">
+        <div class="px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3 sm:space-x-5 md:space-x-9">
+                <!-- logo genérico (reemplazá el src cuando quieras) -->
+                <img src="https://placehold.co/96x96/6a1b9a/fff?text=G" alt="Logo Granja Numérica" class="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full" />
+                <div class="text-xl sm:text-2xl font-bold text-white tracking-widest">Granja Numérica</div>
+            </div>
+
+            <div class="flex flex-col space-y-1 items-center md:flex-row md:space-x-9 md:space-y-0">
+                <a href="#juego" class="px-3 py-1 bg-gn-accent text-white font-semibold rounded-full shadow-xl hover:bg-opacity-90 transition duration-300 transform hover:scale-105 uppercase text-xs sm:text-sm md:text-base md:px-6 md:py-2 whitespace-nowrap">¡Jugar Ahora!</a>
+                <a href="Trabajo Final Conteo de 2 en2 Mili.pdf" download class="px-3 py-1 bg-yellow-500 text-white font-semibold rounded-full shadow-xl hover:bg-yellow-600 transition duration-300 transform hover:scale-105 uppercase text-xs sm:text-sm md:text-base md:px-6 md:py-2 whitespace-nowrap">
+  Descargar PDF
+</a>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="relative h-96 sm:h-screen-75 overflow-hidden bg-gn-purple dark:bg-gray-900">
+        <div class="absolute inset-0 bg-cover bg-center" style="background-image:url('https://placehold.co/1920x1080/6a1b9a/FFFFFF?text=Granja+Numerica'); filter:brightness(0.55);">
+            <video autoplay loop muted playsinline class="w-full h-full object-cover">
+                <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4">
+            </video>
+        </div>
+
+        <div class="relative z-10 flex flex-col items-center justify-center h-full text-center p-6 bg-black bg-opacity-25">
+            <h1 class="text-4xl sm:text-6xl font-extrabold text-white mb-4 drop-shadow-lg">Granja Numérica</h1>
+            <p class="text-lg sm:text-2xl text-white max-w-2xl drop-shadow-md">Aprende a contar de 2 en 2 jugando con personajes adorables en una granja interactiva.</p>
+            <div class="mt-6 flex gap-3">
+                <a href="#juego" class="px-6 py-3 rounded-full bg-white text-gn-purple font-semibold shadow hover:scale-105 transition">Jugar Ahora</a>
+               <a href="Trabajo Final Conteo de 2 en2 Mili.pdf" download class="px-6 py-3 rounded-full bg-gn-accent text-white font-semibold shadow hover:scale-105 transition">
+  Descargar Guía
+</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main -->
+    <main class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-20 bg-gray-50 dark:bg-gray-900">
+        <div class="lg:grid lg:grid-cols-12 lg:gap-10">
+
+            <!-- Main column -->
+            <div class="lg:col-span-8 space-y-12">
+
+                <!-- How it works -->
+                <section id="game-explanation" class="bg-white p-6 rounded-xl shadow-lg transition-shadow duration-300 hover:shadow-2xl dark:bg-gray-800">
+                    <h2 class="text-3xl font-bold text-gn-purple mb-6 border-b-2 border-gn-accent pb-2">🎮 ¿Cómo Funciona Granja Numérica?</h2>
+                    <div class="text-lg space-y-4">
+                        <p class="font-semibold text-xl text-gray-700 dark:text-gray-300">Un juego educativo para aprender a contar de 2 en 2 mediante minijuegos, retos y recompensas.</p>
+                        <p class="text-gray-700 dark:text-gray-300">Los niveles suben progresivamente, los personajes guían la experiencia y hay recompensas por práctica correcta.</p>
+
+                        <div class="mt-4 border border-gray-200 rounded-lg divide-y divide-gray-200 dark:border-gray-700">
+                            <button onclick="toggleSection('pillar1')" class="w-full text-left p-4 bg-gn-bg-soft hover:bg-gray-100 font-medium text-lg flex justify-between items-center transition duration-200 dark:bg-gray-700 dark:hover:bg-gray-600">
+                                <span>Pilar A: Enseñanza por práctica</span>
+                                <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300" id="pillar1-icon"></i>
+                            </button>
+                            <div id="pillar1-content" class="hidden p-4 bg-white text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                                Minijuegos diseñados para repetir y reforzar el conteo en saltos de 2, con feedback inmediato.
+                            </div>
+
+                            <button onclick="toggleSection('pillar2')" class="w-full text-left p-4 bg-gn-bg-soft hover:bg-gray-100 font-medium text-lg flex justify-between items-center transition duration-200 dark:bg-gray-700 dark:hover:bg-gray-600">
+                                <span>Pilar B: Motivación y recompensas</span>
+                                <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300" id="pillar2-icon"></i>
+                            </button>
+                            <div id="pillar2-content" class="hidden p-4 bg-white text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                                Insignias y sistema de puntos para incentivar la práctica y que padres/maestros puedan seguir el progreso.
+                            </div>
+                        </div>
+                    </div>
+                </section>
+<!-- === SECCIÓN: Niveles del Juego === -->
+<section id="niveles" class="py-16 px-6 bg-gray-50 dark:bg-gray-900">
+  <!-- Tarjeta contenedora grande -->
+  <div class="bg-white dark:bg-gray-800 p-12 rounded-3xl shadow-2xl border border-gray-300 dark:border-gray-700 max-w-6xl mx-auto transition-colors duration-500">
+
+    <h2 class="text-4xl font-extrabold text-center text-gn-purple mb-6 drop-shadow-sm">
+      🧩 Niveles del Juego
+    </h2>
+
+    <p class="text-lg text-center text-gray-700 dark:text-gray-200 max-w-2xl mx-auto mb-10">
+      En <strong>Granja Numérica</strong>, cada nivel presenta un reto distinto para aprender a contar
+      de <strong>2 en 2</strong> hasta el <strong>50</strong>.  
+      ¡Acompaña a los animales de la granja y demuestra tus habilidades!
+    </p>
+
+    <!-- Tarjetas de niveles -->
+    <div class="grid md:grid-cols-3 gap-8 mb-10">
+      <!-- Nivel 1 -->
+      <div class="bg-gray-100 dark:bg-gray-900 p-8 rounded-2xl shadow-lg border border-gn-accent/40 hover:scale-105 transition transform">
+        <div class="text-5xl mb-4">🐮</div>
+        <h3 class="text-2xl font-bold text-gn-accent mb-2">Nivel 1: “¿Dónde queda tal número?”</h3>
+        <p class="text-gray-700 dark:text-gray-200 mb-3">
+          Busca la posición correcta en la secuencia.  
+          ¡Ayuda a la vaca a encontrar su número perdido!
+        </p>
+        <span class="inline-block bg-gn-accent/20 text-gn-accent font-semibold px-4 py-1 rounded-full text-sm">
+          🧠 Lógica y ubicación numérica
+        </span>
+      </div>
+
+      <!-- Nivel 2 -->
+      <div class="bg-gray-100 dark:bg-gray-900 p-8 rounded-2xl shadow-lg border border-gn-accent/40 hover:scale-105 transition transform">
+        <div class="text-5xl mb-4">🐴</div>
+        <h3 class="text-2xl font-bold text-gn-accent mb-2">Nivel 2: “¿Qué número va antes?”</h3>
+        <p class="text-gray-700 dark:text-gray-200 mb-3">
+          Selecciona el número anterior correcto y ayuda al caballo
+          a mantener la secuencia.
+        </p>
+        <span class="inline-block bg-gn-accent/20 text-gn-accent font-semibold px-4 py-1 rounded-full text-sm">
+          ➕ Secuencia y orden lógico
+        </span>
+      </div>
+
+      <!-- Nivel 3 -->
+      <div class="bg-gray-100 dark:bg-gray-900 p-8 rounded-2xl shadow-lg border border-gn-accent/40 hover:scale-105 transition transform">
+        <div class="text-5xl mb-4">🐶</div>
+        <h3 class="text-2xl font-bold text-gn-accent mb-2">Nivel 3: “Completa el espacio faltante”</h3>
+        <p class="text-gray-700 dark:text-gray-200 mb-3">
+          Elige el número que falta para completar la secuencia del perrito.  
+          ¡Atención y memoria son la clave!
+        </p>
+        <span class="inline-block bg-gn-accent/20 text-gn-accent font-semibold px-4 py-1 rounded-full text-sm">
+          🔢 Razonamiento y memoria
+        </span>
+      </div>
+    </div>
+
+    <!-- Tarjeta de reglas -->
+    <div class="bg-gray-100 dark:bg-gray-900 p-8 rounded-2xl shadow-lg border border-gn-accent/40 text-center transition-colors duration-500">
+      <h4 class="text-2xl font-bold text-gn-accent mb-3">⭐ Reglas del Juego</h4>
+      <ul class="text-gray-700 dark:text-gray-200 text-lg space-y-2">
+        <li>🎯 <strong>Objetivo:</strong> aprender a contar de <strong>2 en 2</strong> hasta el <strong>50</strong>.</li>
+        <li>🐣 Puedes comenzar en el nivel que prefieras.</li>
+        <li>✅ <strong>+10</strong> puntos por acierto | ❌ <strong>-5</strong> por error.</li>
+        <li>🔁 Si fallas 3 veces la misma pregunta, reinicias el nivel.</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- === SECCIÓN: JUEGO === -->
+<section id="juego" class="py-16 px-6 bg-gray-100 dark:bg-gray-900">
+  <div class="bg-white dark:bg-gray-800 p-12 rounded-3xl shadow-2xl border border-gray-300 dark:border-gray-700 max-w-6xl mx-auto text-center transition-colors duration-500">
+
+    <h2 class="text-4xl font-extrabold text-gn-purple mb-8 drop-shadow-sm">
+      🎮 Juega a Granja Numérica
+    </h2>
+
+    <div id="gameContainer" class="relative w-full aspect-video rounded-2xl overflow-hidden border border-gray-300 dark:border-gray-700 shadow-lg">
+      <!-- Loading overlay -->
+      <div id="gameLoading" class="absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300 text-xl font-semibold z-10" style="display:flex;">
+        Cargando juego...
+      </div>
+
+      <!-- Iframe del juego -->
+      <iframe
+        id="gameFrame"
+        src="WebGL_Build/indexw.html"
+        frameborder="0"
+        allowfullscreen
+        allow="fullscreen"
+        class="w-full h-full"
+      ></iframe>
+
+      <!-- Botón pantalla completa -->
+      <button
+        id="gameFsBtn"
+        class="absolute bottom-4 right-4 bg-gn-accent text-white p-3 rounded-full shadow-lg hover:scale-110 transition"
+        aria-label="Pantalla completa"
+      >
+        <i data-lucide="maximize-2" id="gameFsIcon" class="w-6 h-6"></i>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- === SECCIÓN: Puntajes del Juego === -->
+<section id="puntajes" class="bg-white dark:bg-gray-800 p-8 mt-10 rounded-xl shadow-lg">
+  <h2 class="text-3xl font-bold text-gn-purple mb-6 border-b-2 border-gn-accent pb-2 text-center">
+    🏆 Mejores Puntajes de la Granja Numérica
+  </h2>
+
+  <p class="text-center text-gray-600 dark:text-gray-300 mb-10 max-w-2xl mx-auto">
+    Estos son los puntajes más altos registrados por nivel. ¡Sigue jugando y supera tu propio récord!
+  </p>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+
+    <!-- Nivel 1 -->
+    <div class="bg-gn-bg-soft p-6 rounded-xl shadow-md border-t-4 border-gn-purple hover:scale-105 transition">
+      <h3 class="text-2xl font-semibold text-gn-accent mb-2">Nivel 1: ¿Dónde queda tal número?</h3>
+      <p class="text-black dark font-medium">Mejor Jugador</p>
+      <p class="text-xl font-bold text-gn-purple mt-1">Zaya</p>
+      <p class="text-4xl font-extrabold text-gn-accent mt-3">950 pts</p>
+      <p class="text-gray-500 mt-2">Última actualización: 11/11/2025</p>
+    </div>
+
+    <!-- Nivel 2 -->
+    <div class="bg-gn-bg-soft p-6 rounded-xl shadow-md border-t-4 border-gn-purple hover:scale-105 transition">
+      <h3 class="text-2xl font-semibold text-gn-accent mb-2">Nivel 2: ¿Qué número va antes?</h3>
+      <p class="text-black dark font-medium">Mejor Jugador</p>
+      <p class="text-xl font-bold text-gn-purple mt-1">Leo</p>
+      <p class="text-4xl font-extrabold text-gn-accent mt-3">1,230 pts</p>
+      <p class="text-gray-500 mt-2">Última actualización: 10/11/2025</p>
+    </div>
+
+    <!-- Nivel 3 -->
+    <div class="bg-gn-bg-soft p-6 rounded-xl shadow-md border-t-4 border-gn-purple hover:scale-105 transition">
+      <h3 class="text-2xl font-semibold text-gn-accent mb-2">Nivel 3: Completa el espacio faltante” </h3>
+      <p class="text-black dark font-medium">Mejor Jugador</p>
+      <p class="text-xl font-bold text-gn-purple mt-1">María</p>
+      <p class="text-4xl font-extrabold text-gn-accent mt-3">1,480 pts</p>
+      <p class="text-gray-500 mt-2">Última actualización: 09/11/2025</p>
+    </div>
+
+  </div>
+
+  <div class="mt-10 text-center">
+    <button class="px-6 py-3 bg-gn-accent text-white font-semibold rounded-full shadow hover:scale-105 transition">
+      🔄 Actualizar Puntajes
+    </button>
+  </div>
+</section>
+
+                <div class="section-separator"></div>
+
+                <!-- Gallery -->
+                <section id="gallery" class="bg-white p-6 rounded-xl shadow-lg dark:bg-gray-800">
+                    <h2 class="text-3xl font-bold text-gn-purple mb-6 border-b-2 border-gn-accent pb-2">🖼️ Vistazo a la Granja</h2>
+                    <div class="relative w-full overflow-hidden rounded-xl shadow-2xl">
+                        <div id="carousel-track" class="flex transition-transform duration-500 ease-in-out">
+                            <img src="/Menu.png" class="w-full flex-shrink-0 object-contain h-64 md:h-96" alt="Menu">
+                            <img src="/Buho.png" class="w-full flex-shrink-0 object-contain h-64 md:h-96" alt="Búho">
+                            <img src="/tortuga.png" class="w-full flex-shrink-0 object-contain h-64 md:h-96" alt="Tortuga">
+                            <img src="/Coco.png" class="w-full flex-shrink-0 object-contain h-64 md:h-96" alt="Coco">
+                        </div>
+
+                        <button onclick="moveCarousel(-1)" class="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75 transition duration-300" aria-label="Anterior">
+                            <i data-lucide="chevron-left" class="w-6 h-6"></i>
+                        </button>
+                        <button onclick="moveCarousel(1)" class="absolute top-1/2 right-4 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75 transition duration-300" aria-label="Siguiente">
+                            <i data-lucide="chevron-right" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+                </section>
+
+                <div class="section-separator"></div>
+
+                <!-- About -->
+                <section id="about" class="bg-white p-6 rounded-xl shadow-lg dark:bg-gray-800">
+                    <h2 class="text-3xl font-bold text-gn-purple mb-6 border-b-2 border-gn-accent pb-2">💡 Nuestro Propósito</h2>
+                    <div class="grid md:grid-cols-3 gap-6 text-lg">
+                        <div class="p-4 border-l-4 border-gn-purple">
+                            <h3 class="text-2xl font-semibold mb-2 text-gn-accent">Misión</h3>
+                            <p class="dark:text-gray-300">Hacer el aprendizaje del conteo accesible, divertido e inclusivo mediante juegos interactivos.</p>
+                        </div>
+                        <div class="p-4 border-l-4 border-gn-purple">
+                            <h3 class="text-2xl font-semibold mb-2 text-gn-accent">Visión</h3>
+                            <p class="dark:text-gray-300">Ser referencia educativa que combina tecnología, pedagogía y diversión.</p>
+                        </div>
+                        <div class="p-4 border-l-4 border-gn-purple">
+                            <h3 class="text-2xl font-semibold mb-2 text-gn-accent">Equipo</h3>
+                            <p class="dark:text-gray-300">Ronaldo García<br/>Mileydi López<br/>Jimena Ruíz<br/>Eunice Chávez</p>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="section-separator"></div>
+
+                <!-- Videos -->
+                <section id="videos" class="bg-gray-50 p-6 rounded-xl shadow-lg dark:bg-gray-800">
+                    <h2 class="text-3xl font-bold text-gn-purple mb-6 border-b-2 border-gn-accent pb-2">📺 Videos Explicativos</h2>
+                    <div class="space-y-8">
+                        <div class="bg-white p-4 rounded-lg shadow-md dark:bg-gray-700">
+                            <div class="aspect-video mb-4">
+                                <iframe class="w-full h-full rounded" src="https://www.youtube.com/embed/PNLGW3GoVYI" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gn-purple dark:text-gn-accent">Tutorial Rápido para Padres</h3>
+                            <p class="text-gray-600 mt-1 dark:text-gray-300">Cómo usar la aplicación y monitorear el progreso del niño.</p>
+                        </div>
+
+                        <div class="bg-white p-4 rounded-lg shadow-md dark:bg-gray-700">
+                            <div class="aspect-video mb-4">
+                                <iframe class="w-full h-full rounded" src="https://www.youtube.com/embed/jrXC4AEc1gc" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gn-purple dark:text-gn-accent">Demo para Docentes</h3>
+                            <p class="text-gray-600 mt-1 dark:text-gray-300">Integración con plan de estudios y reportes de desempeño.</p>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- Aside -->
+            <aside class="lg:col-span-4 mt-12 lg:mt-0">
+                <div class="comment-sidebar p-6 rounded-xl bg-white shadow-2xl border-t-4 border-gn-accent dark:bg-gray-800">
+                    <h2 class="text-2xl font-bold text-gn-purple mb-4 dark:text-gray-100">💬 Opina sobre Granja Numérica</h2>
+                    <p class="text-sm text-gray-500 mb-6 dark:text-gray-400">Tu opinión nos ayuda a mejorar. ¡Deja tu reseña!</p>
+
+                    <form id="comment-form" class="space-y-4" autocomplete="off">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Puntuación (1-5)</label>
+                           <div id="rating-stars" class="flex justify-center space-x-2 text-3xl text-gray-400">
+                              <span data-value="1" class="star cursor-pointer">★</span>
+                              <span data-value="2" class="star cursor-pointer">★</span>
+                              <span data-value="3" class="star cursor-pointer">★</span>
+                              <span data-value="4" class="star cursor-pointer">★</span>
+                              <span data-value="5" class="star cursor-pointer">★</span>
+                           </div>
+                           <input type="hidden" id="rating-value" value="0">
+                        </div>
+
+                        <div>
+                            <label for="comment-text" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Tu Comentario</label>
+                            <textarea id="comment-text" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-gn-accent focus:ring-gn-accent p-2 text-base dark:bg-gray-700 dark:border-gray-600" placeholder="¿Qué te pareció el juego? (Opcional)"></textarea>
+                        </div>
+
+                        <div>
+                          <label for="comment-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre</label>
+                          <input id="comment-name" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 text-base dark:bg-gray-700 dark:border-gray-600" placeholder="Tu nombre (opcional)">
+                        </div>
+
+                        <button type="submit" class="w-full py-2 px-4 rounded-md shadow-sm text-sm font-medium text-white bg-gn-purple hover:opacity-95 transition">Enviar Opinión</button>
+                        <p id="comment-message" class="text-sm text-center text-red-500 hidden"></p>
+                    </form>
+
+                    <div class="mt-8 border-t pt-6 dark:border-gray-700">
+                        <h3 class="text-xl font-semibold text-gray-700 mb-3 dark:text-gray-200">Últimas Opiniones</h3>
+                        <div id="comments-list" class="space-y-4">
+                            <p class="text-gray-500 text-sm italic">Aún no hay opiniones. Sé el primero.</p>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer id="contact" class="bg-gn-purple text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8 border-b border-gn-accent pb-8">
+                <div class="col-span-2 md:col-span-1">
+                    <div class="text-3xl font-bold tracking-widest mb-2">Granja Numérica</div>
+                    <p class="text-sm text-purple-200">"Aprender jugando"</p>
+                    <p class="mt-4 text-sm"><i data-lucide="map-pin" class="w-4 h-4 inline-block mr-2"></i>Dirección ejemplo</p>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold mb-3 text-gn-accent">Recursos</h4>
+                    <ul class="space-y-2 text-sm text-purple-200">
+                        <li><a href="#game-explanation" class="hover:text-white">Explicación</a></li>
+                        <li><a href="#gallery" class="hover:text-white">Galería</a></li>
+                        <li><a href="#videos" class="hover:text-white">Videos</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold mb-3 text-gn-accent">La Aplicación</h4>
+                    <ul class="space-y-2 text-sm text-purple-200">
+                        <li><a href="#about" class="hover:text-white">Misión y Visión</a></li>
+                        <li><a href="#" class="hover:text-white">Términos</a></li>
+                        <li><a href="#" class="hover:text-white">Privacidad</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold mb-3 text-gn-accent">Contáctanos</h4>
+                    <ul class="space-y-2 text-sm text-purple-200">
+                        <li><a href="mailto:contacto@granjanumerica.com" class="hover:text-white"><i data-lucide="mail" class="w-4 h-4 inline-block mr-2"></i>contacto@granjanumerica.com</a></li>
+                        <li><a href="tel:+50500000000" class="hover:text-white"><i data-lucide="phone" class="w-4 h-4 inline-block mr-2"></i>+505 0000 0000</a></li>
+                        <li class="flex space-x-3 mt-4">
+                            <a href="https://facebook.com" target="_blank" class="text-purple-200 hover:text-white"><i data-lucide="facebook" class="w-6 h-6"></i></a>
+                            <a href="https://tiktok.com" target="_blank" class="text-purple-200 hover:text-white"><i data-lucide="square-play" class="w-6 h-6"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="text-center text-sm text-purple-200 pt-4">&copy; 2025 Granja Numérica — Proyecto educativo universitario.</div>
+        </div>
+    </footer>
+
+    <!-- === AÑADIDO: Firebase config para que tu tryInitFirebaseIfProvided lo detecte === -->
+    <script>
+      // Este bloque define window.__firebase_config que tu script dinámico usa.
+      // Lo dejé exactamente como me lo pegaste.
+      window.__firebase_config = {
+        apiKey: "AIzaSyCuWMz_wNsMnQJAnlTHPG3vlHYaJtgVv6Q",
+        authDomain: "granja-numerica.firebaseapp.com",
+        projectId: "granja-numerica",
+        storageBucket: "granja-numerica.appspot.com",
+        messagingSenderId: "123178673947",
+        appId: "1:123178673947:web:2ed58082c90a067a2bd5be",
+        measurementId: "G-S7PBF9YBM4",
+        databaseURL: "https://granja-numerica-default-rtdb.firebaseio.com"
+      };
+    </script>
+
+    <script type="module">
+  lucide.createIcons();
+
+  // === Tema claro/oscuro ===
+  const bodyEl = document.body;
+  const themeIconEl = document.getElementById('theme-icon');
+  function updateTheme(isDark) {
+      if (isDark) {
+          bodyEl.classList.add('dark');
+          themeIconEl.setAttribute('data-lucide','sun');
+          localStorage.setItem('gn_theme','dark');
+      } else {
+          bodyEl.classList.remove('dark');
+          themeIconEl.setAttribute('data-lucide','moon');
+          localStorage.setItem('gn_theme','light');
+      }
+      lucide.createIcons();
+  }
+  window.toggleDarkMode = ()=> updateTheme(!bodyEl.classList.contains('dark'));
+  (()=>{
+      const saved = localStorage.getItem('gn_theme');
+      const prefers = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      updateTheme(saved === 'dark' || (!saved && prefers));
+  })();
+
+  // === Secciones desplegables ===
+  window.toggleSection = (id)=>{
+      const content = document.getElementById(`${id}-content`);
+      const icon = document.getElementById(`${id}-icon`);
+      if (!content) return;
+      content.classList.toggle('hidden');
+      if (icon) icon.classList.toggle('rotate-180');
+  };
+
+  // === Carrusel ===
+  const carouselTrack = document.getElementById('carousel-track');
+  let currentSlide = 0, totalSlides = carouselTrack?.children.length || 1;
+  let carouselInterval;
+  function updateCarousel(){ if(carouselTrack) carouselTrack.style.transform=`translateX(-${currentSlide*100}%)`; }
+  function autoSlide(){ totalSlides=carouselTrack?.children.length||totalSlides; currentSlide=(currentSlide+1)%totalSlides; updateCarousel(); }
+  function resetAutoSlide(){ clearInterval(carouselInterval); carouselInterval=setInterval(autoSlide,5000); }
+  window.moveCarousel = (d)=>{ currentSlide=(currentSlide+d+totalSlides)%totalSlides; updateCarousel(); resetAutoSlide(); };
+  resetAutoSlide();
+
+  // === Comentarios ===
+  const form = document.getElementById('comment-form');
+  const msgEl = document.getElementById('comment-message');
+  const listEl = document.getElementById('comments-list');
+  const starsEl = document.getElementById('rating-stars');
+  const ratingInput = document.getElementById('rating-value');
+  const textEl = document.getElementById('comment-text');
+  const nameEl = document.getElementById('comment-name');
+  const STORAGE_KEY = 'granja_comments_v1';
+
+  // --- Estrellas ---
+  function updateStarDisplay(v){
+    starsEl.querySelectorAll('.star').forEach(s=>{
+      const val=parseInt(s.dataset.value);
+      s.classList.toggle('text-yellow-400', val<=v);
+      s.classList.toggle('text-gray-400', val>v);
+    });
+  }
+  starsEl.querySelectorAll('.star').forEach(s=>{
+    s.addEventListener('click',()=>{
+      const v=parseInt(s.dataset.value);
+      ratingInput.value=v;
+      updateStarDisplay(v);
+    });
+  });
+
+  // --- Local ---
+  function loadLocal(){
+    try{
+      const arr=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
+      render(arr);
+    }catch{ render([]); }
+  }
+  function saveLocal(entry){
+    const arr=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
+    arr.unshift(entry);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(arr.slice(0,100)));
+    render(arr);
+  }
+  function render(list){
+    if(!list.length){
+      listEl.innerHTML='<p class="text-gray-500 text-sm italic">Aún no hay opiniones. ¡Sé el primero!</p>';
+      return;
+    }
+    listEl.innerHTML=list.map(c=>{
+      const safe=(c.comment||'').replace(/</g,'&lt;');
+      const stars=Array.from({length:5},(_,i)=>`<i data-lucide="star" class="w-4 h-4 ${i<c.rating?'text-yellow-400':'text-gray-300'}"></i>`).join('');
+      return `<div class="p-3 bg-gray-50 rounded-lg border dark:bg-gray-700 dark:border-gray-600 comment-card">
+        <div class="flex justify-between text-xs text-gray-400 mb-1">
+          <span>${c.user||'Usuario'}</span>
+          <span>${c.timestamp||''}</span>
+        </div>
+        <div class="flex items-center mb-2">${stars}</div>
+        ${safe?`<p class="text-sm text-gray-700 dark:text-gray-200">${safe}</p>`:''}
+      </div>`;
+    }).join('');
+    lucide.createIcons();
+  }
+
+  // --- Firebase Realtime ---
+  let useFirebase=false, dbRef=null;
+  async function tryInitRealtime(){
+    if(!window.__firebase_config) return false;
+    try{
+      const { initializeApp } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js');
+      const { getDatabase, ref, push, onValue, serverTimestamp, set } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js');
+      const app = initializeApp(window.__firebase_config);
+      const db = getDatabase(app);
+      dbRef = ref(db, 'granja_comments');
+      // Cargar comentarios
+      onValue(dbRef, snap=>{
+        const data=snap.val()||{};
+        const list=Object.values(data).sort((a,b)=>(b.timestamp||0)-(a.timestamp||0)).map(c=>({
+          user:c.user||'Usuario',
+          rating:c.rating||0,
+          comment:c.comment||'',
+          timestamp: c.timestamp ? new Date(c.timestamp).toLocaleString('es-ES',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : ''
+        }));
+        render(list);
+      });
+      useFirebase=true;
+      return { ref, push, set, serverTimestamp };
+    }catch(e){ console.warn('Realtime init failed',e); return false; }
+  }
+
+  // --- Envío ---
+  let fbApi=null;
+  form.addEventListener('submit', async e=>{
+    e.preventDefault();
+    msgEl.classList.add('hidden');
+    const rating=parseInt(ratingInput.value)||0;
+    const comment=textEl.value.trim();
+    const user=nameEl.value.trim()||'Anónimo';
+    if(rating<=0){ msgEl.textContent='Selecciona una puntuación.'; msgEl.classList.remove('hidden'); return; }
+    const entry={ user, rating, comment, timestamp:Date.now() };
+
+    if(useFirebase && fbApi && dbRef){
+      try{
+        const newRef = fbApi.push(dbRef);
+        await fbApi.set(newRef,{ ...entry });
+        textEl.value=''; nameEl.value=''; ratingInput.value=0; updateStarDisplay(0);
+        msgEl.textContent='¡Gracias por tu comentario!'; msgEl.classList.remove('hidden'); msgEl.classList.replace('text-red-500','text-green-500');
+      }catch(err){
+        console.error(err);
+        saveLocal(entry);
+        msgEl.textContent='Guardado localmente (offline).'; msgEl.classList.remove('hidden');
+      }
+    }else{
+      saveLocal(entry);
+      msgEl.textContent='Guardado localmente (sin conexión a servidor).'; msgEl.classList.remove('hidden');
+    }
+  });
+
+  // === Inicialización ===
+  (async()=>{
+    fbApi = await tryInitRealtime();
+    if(!fbApi) loadLocal();
+  })();
+
+
+
+        // -----------------------
+        // PDF generation with jsPDF (client-side)
+        // -----------------------
+        // const { jsPDF } = window.jspdf || {};
+        // async function generateAndDownloadPDF(){
+        //     try {
+        //         const doc = new jsPDF({ unit:'pt', format:'a4' });
+        //         const title = 'Granja Numérica - Guía del Juego';
+        //         doc.setFontSize(22);
+        //         doc.setTextColor('#6a1b9a');
+        //         doc.text(title, 40, 60);
+
+        //         doc.setFontSize(12);
+        //         doc.setTextColor('#000000');
+        //         const content = [
+        //             'Proyecto: Granja Numérica',
+        //             '',
+        //             'Resumen:',
+        //             'Granja Numérica es un juego educativo para aprender a contar de 2 en 2 mediante minijuegos, personajes y recompensas.',
+        //             '',
+        //             'Secciones:',
+        //             '- Juego integrado (WebGL)',
+        //             '- Misión / Visión / Equipo',
+        //             '- Galería de capturas',
+        //             '- Videos explicativos',
+        //             '- Sistema de comentarios'
+        //         ];
+        //         let y = 100;
+        //         content.forEach(line => {
+        //             doc.text(line, 40, y);
+        //             y += 18;
+        //             if (y > 740) { doc.addPage(); y = 40; }
+        //         });
+
+        //         doc.save('Granja_Numerica_Guia.pdf');
+        //     } catch (e){
+        //         alert('Error al generar PDF: ' + (e && e.message ? e.message : e));
+        //     }
+        // }
+
+        // // Wire up download buttons
+        // document.getElementById('download-pdf').addEventListener('click', generateAndDownloadPDF);
+        // document.getElementById('download-pdf-hero').addEventListener('click', generateAndDownloadPDF);
+
+        // === ADICION: manejo de fullscreen y carga del iframe ===
+        (function(){
+          const container = document.getElementById('gameContainer');
+          const iframe = document.getElementById('gameFrame');
+          const btn = document.getElementById('gameFsBtn');
+          const icon = document.getElementById('gameFsIcon');
+          const loading = document.getElementById('gameLoading');
+
+          // cuando el iframe carga exitosamente, ocultar overlay
+          if (iframe) {
+            iframe.addEventListener('load', () => {
+              if (loading) loading.style.display = 'none';
+            });
+          }
+
+          // botón de fullscreen: hacemos fullscreen del contenedor (mejor que del iframe para controles)
+          let isFs = false;
+          async function enterFs(){
+            try {
+              if (container.requestFullscreen) await container.requestFullscreen();
+              else if (container.webkitRequestFullscreen) await container.webkitRequestFullscreen();
+              container.classList.add('fullscreen');
+              icon.setAttribute('data-lucide','minimize-2');
+              lucide.createIcons();
+              isFs = true;
+            } catch(e){
+              container.classList.add('fullscreen');
+              icon.setAttribute('data-lucide','minimize-2');
+              lucide.createIcons();
+              isFs = true;
+            }
+          }
+          async function exitFs(){
+            try {
+              if (document.exitFullscreen) await document.exitFullscreen();
+              else if (document.webkitExitFullscreen) await document.webkitExitFullscreen();
+            } catch(e){}
+            container.classList.remove('fullscreen');
+            icon.setAttribute('data-lucide','maximize-2');
+            lucide.createIcons();
+            isFs = false;
+          }
+
+          if (btn) btn.addEventListener('click', async () => {
+            if (!isFs) await enterFs();
+            else await exitFs();
+          });
+
+          // keep icon state in sync if user uses ESC or browser FS button
+          document.addEventListener('fullscreenchange', () => {
+            const currentlyFs = !!document.fullscreenElement;
+            if (!currentlyFs){
+              container.classList.remove('fullscreen');
+              icon.setAttribute('data-lucide','maximize-2');
+              lucide.createIcons();
+              isFs = false;
+            } else {
+              container.classList.add('fullscreen');
+              icon.setAttribute('data-lucide','minimize-2');
+              lucide.createIcons();
+              isFs = true;
+            }
+          });
+
+          // Accessibility: allow keyboard F key to toggle when focused inside container
+          container.addEventListener('keydown', (e) => {
+            if (e.key.toLowerCase() === 'f') {
+              e.preventDefault();
+              if (!isFs) enterFs(); else exitFs();
+            }
+          });
+        })();
+
+        // keep carousel running even if user didn't interact yet
+        // (resetAutoSlide already defined above)
+    </script>
+</body>
+</html>
