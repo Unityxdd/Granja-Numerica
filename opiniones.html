@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <title>Granja Numérica - Opiniones</title>
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Vendor CSS -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+
+  <!-- Main CSS -->
+  <link href="assets/css/main.css" rel="stylesheet">
+
+  <style>
+    /* Redes a la derecha */
+    .header-social-links {
+      margin-left: 30px;
+      margin-right: -20px;
+      transform: translateX(20px);
+    }
+
+    /* Empujar footer */
+    body, html {
+      height: 100%;
+    }
+
+    .main {
+      min-height: calc(100vh - 200px);
+      padding-top: 60px;
+      padding-bottom: 60px;
+    }
+
+    /* ---------------------- MODO OSCURO PARA ESTA SECCIÓN ---------------------- */
+
+    /* Tarjeta principal */
+    .comment-sidebar {
+      background: #121212 !important;
+      color: #e6e6e6 !important;
+      border-top: 4px solid #0b8478 !important;
+    }
+
+    .comment-sidebar h2,
+    .comment-sidebar p,
+    .comment-sidebar label,
+    .comment-sidebar h3 {
+      color: #e6e6e6 !important;
+    }
+
+    /* Input y textarea oscuros */
+    .comment-sidebar .form-control {
+      background: #1e1e1e;
+      color: #f1f1f1;
+      border: 1px solid #333;
+    }
+
+    .comment-sidebar .form-control::placeholder {
+      color: #b5b5b5;
+    }
+
+    /* Hover inputs */
+    .comment-sidebar .form-control:focus {
+      background: #1e1e1e;
+      border-color: #0b8478;
+      color: #fff;
+      box-shadow: 0 0 0 0.2rem rgba(138, 43, 226, 0.35);
+    }
+
+    /* Botón */
+    .btn {
+      background: #0b8478 !important;
+      border: none;
+    }
+
+    .btn:hover {
+      background: #0b8478 !important;
+      transform: scale(1.02);
+    }
+
+    /* Tarjetas de comentarios */
+    .comment-card {
+      background: #1f1f1f !important;
+      color: #f2f2f2 !important;
+      border-radius: 14px;
+      padding: 20px;
+      border: 1px solid #333;
+      transition: transform .12s ease, box-shadow .12s ease;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.55);
+    }
+
+    .comment-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 22px rgba(0,0,0,0.75);
+      border-color: #0b8478;
+    }
+
+    .comment-card p,
+    .comment-card strong,
+    .comment-card small {
+      color: #e6e6e6 !important;
+    }
+
+    /* Estrellas dentro de tarjetas */
+    .comment-card span {
+      color: #facc15 !important;
+    }
+
+    /* Estrellas del formulario */
+    .star {
+      color: #9ca3af;
+      cursor: pointer;
+      transition: color .1s ease, transform .1s ease;
+    }
+
+    .star:hover {
+      transform: scale(1.15);
+    }
+
+  </style>
+</head>
+
+<body class="index-page">
+
+  <!-- HEADER -->
+  <header id="header" class="header d-flex align-items-center light-background sticky-top">
+    <div class="container position-relative d-flex align-items-center justify-content-between">
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="funciona.html">¿Cómo Funciona?</a></li>
+          <li><a href="niveles.html">Niveles del Juego</a></li>
+          <li><a href="vistazo.html">Vistazo a la Granja</a></li>
+
+          <li class="dropdown">
+            <a href="#"><span>Propósito</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+              <li><a href="mision.html">Misión</a></li>
+              <li><a href="vision.html">Visión</a></li>
+            </ul>
+          </li>
+
+          <li><a href="descargar.html">Descargar Documento</a></li>
+          <li><a href="opiniones.html" class="active">Opiniones & Comentarios</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
+      <div class="header-social-links">
+        <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
+        <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
+        <a href="#" class="tiktok"><i class="bi bi-tiktok"></i></a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="main container">
+
+    <div class="comment-sidebar p-5 rounded-4 shadow-lg border-top border-4">
+
+      <h2 class="text-center mb-3 fw-bold" style="color:#8a2be2;">
+        💬 Opina sobre Granja Numérica
+      </h2>
+
+      <p class="text-center mb-4">
+        Tu opinión nos ayuda a mejorar. ¡Deja tu reseña!
+      </p>
+
+      <!-- FORMULARIO -->
+      <form id="comment-form" class="space-y-4" autocomplete="off">
+
+        <label class="fw-bold">Puntuación (1-5)</label>
+        <div id="rating-stars" class="d-flex justify-content-center mb-3 gap-2 fs-1">
+          <span data-value="1" class="star">★</span>
+          <span data-value="2" class="star">★</span>
+          <span data-value="3" class="star">★</span>
+          <span data-value="4" class="star">★</span>
+          <span data-value="5" class="star">★</span>
+        </div>
+
+        <input type="hidden" id="rating-value" value="0">
+
+        <label class="fw-bold">Tu Comentario</label>
+        <textarea id="comment-text" rows="3" class="form-control" placeholder="¿Qué te pareció el juego? (Opcional)"></textarea>
+
+        <label class="fw-bold">Nombre</label>
+        <input id="comment-name" type="text" class="form-control" placeholder="Tu nombre (opcional)">
+
+        <button class="btn w-100 text-white mt-3">Enviar Opinión</button>
+
+        <p id="comment-message" class="text-center text-danger mt-2 d-none"></p>
+      </form>
+
+      <!-- LISTA -->
+      <div class="mt-5 pt-4 border-top">
+        <h3 class="fw-bold mb-3">Últimas Opiniones</h3>
+
+        <div id="comments-list" class="space-y-4">
+          <p class="text-muted fst-italic">Aún no hay opiniones. Sé el primero.</p>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer id="footer" class="footer mt-auto">
+    <div class="container text-center">
+      <p>Proyecto escolar – Granja Numérica</p>
+    </div>
+  </footer>
+
+  <!-- JS -->
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>AOS.init();</script>
+
+  <!-- SISTEMA DE OPINIONES -->
+  <script>
+    const form = document.getElementById('comment-form');
+    const msgEl = document.getElementById('comment-message');
+    const listEl = document.getElementById('comments-list');
+    const starsEl = document.getElementById('rating-stars');
+    const ratingInput = document.getElementById('rating-value');
+    const textEl = document.getElementById('comment-text');
+    const nameEl = document.getElementById('comment-name');
+    const STORAGE_KEY = "granja_comments_v1";
+
+    function updateStarDisplay(v){
+      starsEl.querySelectorAll('.star').forEach(s=>{
+        const val = parseInt(s.dataset.value);
+        s.style.color = (val <= v) ? "#facc15" : "#9ca3af";
+      });
+    }
+
+    starsEl.querySelectorAll('.star').forEach(s=>{
+      s.addEventListener('click', ()=>{
+        const v = parseInt(s.dataset.value);
+        ratingInput.value = v;
+        updateStarDisplay(v);
+      });
+    });
+
+    function getComments(){
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    }
+
+    function saveComment(obj){
+      const arr = getComments();
+      arr.unshift(obj);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+    }
+
+    function renderComments(){
+      const data = getComments();
+      listEl.innerHTML = "";
+
+      if(data.length === 0){
+        listEl.innerHTML = `<p class="text-muted fst-italic">Aún no hay opiniones. Sé el primero.</p>`;
+        return;
+      }
+
+      data.forEach(c=>{
+        const div = document.createElement("div");
+        div.className = "comment-card";
+
+        div.innerHTML = `
+          <strong>${c.name || "Anónimo"}</strong>
+          <span class="ms-2">${"★".repeat(c.rating)}</span>
+          <p class="m-1">${c.text || "<i>Sin comentario</i>"}</p>
+          <small>${c.date}</small>
+        `;
+
+        listEl.appendChild(div);
+      });
+    }
+
+    form.addEventListener("submit", e=>{
+      e.preventDefault();
+
+      const rating = parseInt(ratingInput.value);
+      const text = textEl.value.trim();
+      const name = nameEl.value.trim();
+
+      if(!rating){
+        msgEl.textContent = "Por favor selecciona una puntuación.";
+        msgEl.classList.remove("d-none");
+        return;
+      }
+
+      msgEl.classList.add("d-none");
+
+      saveComment({
+        rating,
+        text,
+        name,
+        date: new Date().toLocaleString()
+      });
+
+      renderComments();
+      form.reset();
+      ratingInput.value = "0";
+      updateStarDisplay(0);
+    });
+
+    renderComments();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,353 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Niveles del Juego – Granja Numérica</title>
+
+  <link href="assets/img/favicon.png" rel="icon">
+
+   <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Vendor CSS -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+
+  <!-- Main CSS -->
+  <link href="assets/css/main.css" rel="stylesheet">
+
+  <!-- ESTILOS WOW -->
+ <style>
+
+    /* =============================
+        TIMELINE WOW
+       ============================= */
+    .timeline {
+      position: relative;
+      margin: 60px 0;
+      padding-left: 35px;
+    }
+
+    .timeline:before {
+      content: "";
+      position: absolute;
+      left: 25px;
+      top: 0;
+      width: 6px;
+      height: 100%;
+      background: linear-gradient(#d6c29f, #8b714a);
+      border-radius: 30px;
+      box-shadow: 0 0 10px #000;
+    }
+
+    /* ITEMS */
+    .timeline-item {
+      position: relative;
+      margin-bottom: 70px;
+      padding-left: 50px;
+    }
+
+    .timeline-item:before {
+      content: "";
+      position: absolute;
+      left: 14px;
+      background: radial-gradient(circle, #fff, #c9b07d);
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 3px solid #6c4f2d;
+      box-shadow: 0 0 8px #000;
+      top: 25px;
+    }
+
+    /* TARJETAS OSCURAS */
+    .timeline-item .row {
+      background: #0e181e;
+      padding: 25px;
+      border-radius: 16px;
+      border-left: 5px solid #4fd1c5;
+      box-shadow: 0 0 15px #0008;
+      transition: 0.3s ease;
+    }
+
+    .timeline-item .row:hover {
+      transform: translateX(6px);
+      box-shadow: 0 0 25px #1f3640;
+    }
+
+    /* IMÁGENES */
+    .timeline img {
+      border-radius: 16px;
+      box-shadow: 0 0 12px #000a;
+    }
+
+    /* =============================
+      PANTALLAS FINALES
+    ============================= */
+.final-box {
+  background: #0e181e !important;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 0 18px #0007;
+  margin-bottom: 25px;
+}
+
+/* Color de texto para todo lo que esté dentro */
+.final-box,
+.final-box * {
+  color: #d9f5f2 !important;
+}
+
+
+
+
+    .card {
+      background: #15242c !important;
+      border-radius: 18px;
+      box-shadow: 0 0 25px #0008;
+      border: none !important;
+    }
+     /* Fix definitivo: mismo color que el fondo global */
+    #header {
+      background-color: var(--background-color) !important;
+      box-shadow: none !important;
+    }
+    /* Tarjetas oscuras (mismo estilo que surface pero un poco más fuerte) */
+    .card-gn {
+      background-color: #0d171d; 
+      border: 1px solid #15242c;
+      border-radius: 12px;
+      padding: 22px;
+      transition: transform .25s, box-shadow .25s;
+    }
+
+    .card-gn:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.35);
+    }
+
+    .card-gn h4 {
+      color: var(--heading-color);
+      font-weight: 600;
+    }
+
+    .card-gn p {
+      color: var(--default-color);
+    }
+    .section-bg-dark {
+  background-color: var(--background-color) !important;
+}
+
+.big-img img {
+  border-radius: 14px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.45);
+}
+
+.emoji-large {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+/* ============================
+   FIX DEL MENÚ OSCURO
+   ============================ */
+
+
+
+
+  </style>
+
+</head>
+
+<body class="index-page">
+
+ 
+  <!-- HEADER -->
+  <header id="header" class="header d-flex align-items-center sticky-top">
+    <div class="container position-relative d-flex align-items-center justify-content-between">
+<!-- Menú -->
+<nav id="navmenu" class="navmenu"> <ul>
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="funciona.html">¿Cómo Funciona?</a></li>
+    <li><a href="niveles.html"class="active">Niveles del Juego</a></li>
+    <li><a href="vistazo.html">Vistazo a la Granja</a></li>
+    <li class="dropdown"> <a href="#"><span>Propósito</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+      <ul>
+        <li><a href="mision.html">Misión</a></li>
+        <li><a href="vision.html">Visión</a></li>
+      </ul>
+    </li>
+    <li><a href="descargar.html">Descargar Documento</a></li>
+    <li><a href="opiniones.html">Opiniones</a></li>
+    </ul> <i class="mobile-nav-toggle d-xl-none bi bi-list"></i> </nav>
+
+      <!-- Redes sociales -->
+      <div class="header-social-links">
+        <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
+        <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
+        <a href="#" class="tiktok"><i class="bi bi-tiktok"></i></a>
+      </div>
+
+    </div>
+  </header>
+
+
+
+  <main class="main">
+
+    <!-- ===========================
+          SECCIÓN NIVELES
+    ============================ -->
+    <section id="niveles-juego" class="resume section">
+
+      <div class="container section-title text-center" data-aos="fade-up">
+        <h2>🎮 Niveles del Juego – Granja Numérica</h2>
+        <p>
+          Granja Numérica cuenta con <strong>3 niveles progresivos</strong>, acompañados por:
+          el <strong>Búho Matemático</strong>, el <strong>Conejo Veloz</strong> y la <strong>Tortuga Sabia</strong>.
+          <br> Perfectos para aprender a contar de <strong>2 en 2</strong> hasta <strong>50</strong>.
+        </p>
+      </div>
+
+      <div class="container">
+
+        <!-- TIMELINE -->
+        <div class="timeline">
+
+          <!-- NIVEL 1 -->
+          <div class="timeline-item" data-aos="fade-right">
+            <div class="row align-items-center">
+              <div class="col-lg-4 text-center">
+                <img src="assets/img/Juego/buho.png" class="img-fluid" alt="Búho Matemático">
+              </div>
+              <div class="col-lg-8">
+                <h3>Nivel 1 – El Búho Matemático 🦉</h3>
+                <p class="lead"><strong>Reto: "Encuentra el número correcto"</strong></p>
+                <p>Identificar la posición correcta dentro de la secuencia que avanza de <strong>2 en 2</strong>.</p>
+                <ul>
+                  <li>Reconocimiento de patrones.</li>
+                  <li>Secuencias numéricas.</li>
+                </ul>
+                <p><strong>Mecánica:</strong> Tocar el número correcto.</p>
+                <p><strong>Fallos permitidos:</strong> 3.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- NIVEL 2 -->
+          <div class="timeline-item" data-aos="fade-left">
+            <div class="row align-items-center">
+              <div class="col-lg-8">
+                <h3>Nivel 2 – El Conejo Veloz 🐰</h3>
+                <p class="lead"><strong>Reto: "¿Qué número va antes?"</strong></p>
+                <p>Elegir cuál número antecede dentro de la secuencia.</p>
+                <ul>
+                  <li>Memoria numérica.</li>
+                  <li>Secuencias inversas.</li>
+                  <li>Agilidad mental.</li>
+                </ul>
+                <p><strong>Mecánica:</strong> Opción múltiple (4 respuestas).</p>
+                <p><strong>Fallos permitidos:</strong> 3.</p>
+              </div>
+              <div class="col-lg-4 text-center">
+                <img src="assets/img/Juego/conejo.png" class="img-fluid" alt="Conejo Veloz">
+              </div>
+            </div>
+          </div>
+
+          <!-- NIVEL 3 -->
+          <div class="timeline-item" data-aos="fade-right">
+            <div class="row align-items-center">
+              <div class="col-lg-4 text-center">
+                <img src="assets/img/Juego/tortuga.png" class="img-fluid" alt="Tortuga Sabia">
+              </div>
+              <div class="col-lg-8">
+                <h3>Nivel 3 – La Tortuga Sabia 🐢</h3>
+                <p class="lead"><strong>Reto: "Completa la secuencia"</strong></p>
+                <p>La secuencia presenta un número faltante y el jugador debe arrastrar la respuesta correcta.</p>
+                <ul>
+                  <li>Motricidad fina.</li>
+                  <li>Patrones numéricos.</li>
+                  <li>Razonamiento lógico.</li>
+                </ul>
+                <p><strong>Mecánica:</strong> Arrastrar y soltar.</p>
+                <p><strong>Fallos permitidos:</strong> 3.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ===========================
+            PANTALLAS FINALES
+        ============================ -->
+        <div class="card p-4 mt-5" data-aos="fade-up">
+          <h3 class="text-center mb-4">🎯 Pantallas Finales del Juego</h3>
+
+          <div class="final-box" style="border-left:5px solid #e53e3e;">
+            <h4 style="color:#e53e3e;">❌ Pantalla de Pérdida</h4>
+            <ul>
+              <li>Puntaje final mostrado.</li>
+              <li>Botón «Volver a jugar».</li>
+              <li>Botón «Menú principal».</li>
+            </ul>
+          </div>
+
+          <div class="final-box" style="border-left:5px solid #38bdf8;">
+            <h4 style="color:#38bdf8;">🎉 Pantalla de Victoria</h4>
+
+            <p class="text-secondary">En niveles 1 y 2:</p>
+            <ul>
+              <li>Mensaje de felicitaciones.</li>
+              <li>Botón «Volver a jugar».</li>
+              <li>Botón «Siguiente nivel».</li>
+            </ul>
+
+            <p class="text-secondary mt-3">En nivel 3:</p>
+            <ul>
+              <li>Mensaje de felicitaciones.</li>
+              <li>Botón «Volver a jugar».</li>
+              <li>Botón «Menú principal».</li>
+            </ul>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer id="footer" class="footer mt-auto">
+    <div class="container text-center">
+      <p>Proyecto escolar – Granja Numérica</p>
+    </div>
+  </footer>
+
+ 
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Preloader -->
+  <div id="preloader"></div>
+
+  <!-- JS -->
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="assets/js/main.js"></script>
+
+  <script>
+    AOS.init();
+  </script>
+
+</body>
+
+</html>

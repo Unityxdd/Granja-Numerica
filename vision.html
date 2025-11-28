@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <title>Granja Numérica - Visión</title>
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Vendor CSS -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+
+  <!-- Main CSS -->
+  <link href="assets/css/main.css" rel="stylesheet">
+
+  <style>
+    /* Mover redes sociales más a la derecha */
+    .header-social-links {
+      margin-left: 30px;
+      margin-right: -20px;
+      transform: translateX(20px);
+    }
+
+    /* Empujar footer al fondo */
+    body, html {
+      height: 100%;
+    }
+
+    .main {
+      min-height: calc(100vh - 200px); /* Espacio entre header y footer */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+/* Contenedor */
+.vision-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Tarjeta */
+.vision-card {
+  background: #023978;
+  border-radius: 18px;
+  padding: 35px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.vision-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.16);
+}
+
+/* Título */
+.vision-title {
+  font-size: 2.8rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #afafaf;
+}
+
+/* Texto */
+.vision-text {
+  color: #ffffff;
+  font-size: 1.05rem;
+  text-align: center;
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+/* Botón */
+.btn-vision {
+  display: inline-block;
+  background: #3a8bda; /* Verde bonito para diferenciar de misión */
+  color: #fff !important;
+  padding: 12px 28px;
+  border-radius: 50px;
+  font-weight: bold;
+  transition: 0.3s ease;
+  text-decoration: none;
+}
+
+.btn-vision:hover {
+  background: #1e6fc0;
+  transform: scale(1.05);
+}
+
+    /* Centrado del contenido */
+    #hero {
+      padding: 80px 0;
+    }
+  </style>
+</head>
+
+<body class="index-page">
+
+  <!-- HEADER -->
+  <header id="header" class="header d-flex align-items-center light-background sticky-top">
+    <div class="container position-relative d-flex align-items-center justify-content-between">
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="funciona.html">¿Cómo Funciona?</a></li>
+          <li><a href="niveles.html">Niveles del Juego</a></li>
+          <li><a href="vistazo.html">Vistazo a la Granja</a></li>
+
+          <li class="dropdown">
+            <a href="#"><span>Propósito</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+              <li><a href="mision.html">Misión</a></li>
+              <li><a href="vision.html" class="active">Visión</a></li>
+            </ul>
+          </li>
+          <li><a href="descargar.html">Descargar Documento</a></li>
+          <li><a href="opiniones.html">Opiniones & Comentarios</a></li>
+        </ul>
+
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
+      <!-- Redes sociales movidas más a la derecha -->
+      <div class="header-social-links">
+        <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
+        <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
+        <a href="#" class="tiktok"><i class="bi bi-tiktok"></i></a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="main">
+<section class="vision-section container py-5">
+  <div class="row justify-content-center">
+    
+    <div class="col-lg-6 col-md-8">
+
+      <!-- Tarjeta tipo niveles -->
+      <div class="vision-card" data-aos="zoom-in" data-aos-duration="900">
+
+        <h1 class="vision-title">VISIÓN</h1>
+
+        <p class="vision-text">
+          Nuestra visión en <strong>Granja Numérica</strong> es convertirnos en una herramienta educativa
+          reconocida por facilitar el aprendizaje matemático en etapas tempranas mediante experiencias
+          visuales, intuitivas y memorables. Queremos que cada niño descubra que los números pueden
+          ser divertidos y parte de un entorno amigable y lleno de vida.
+        </p>
+
+        <p class="vision-text">
+          Aspiramos a seguir ampliando la plataforma con actividades interactivas, niveles adicionales
+          y desafíos que fortalezcan la lógica, la atención y la confianza de los estudiantes al trabajar
+          con patrones numéricos. Buscamos que el aprendizaje sea accesible, dinámico y motivador.
+        </p>
+
+        <div class="text-center mt-3">
+          <a href="niveles.html" class="btn-vision">Ver niveles</a>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+  </main>
+
+  <!-- FOOTER (más abajo) -->
+  <footer id="footer" class="footer mt-auto">
+    <div class="container text-center">
+      <p>Proyecto escolar – Granja Numérica</p>
+    </div>
+  </footer>
+
+  <!-- JS -->
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+<script>AOS.init();</script>
+
+
+</body>
+</html>

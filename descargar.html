@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <title>Granja Numérica - Descargar</title>
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Vendor CSS -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+
+  <!-- Main CSS -->
+  <link href="assets/css/main.css" rel="stylesheet">
+
+  <style>
+    /* Ajuste redes sociales */
+    .header-social-links {
+      margin-left: 30px;
+      margin-right: -20px;
+      transform: translateX(20px);
+    }
+
+    /* Forzar footer al fondo */
+    body, html {
+      height: 100%;
+    }
+
+    .main {
+      min-height: calc(100vh - 200px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* Glow container del main */
+    .doc-box {
+      background: rgba(1, 53, 32, 0.15);
+      backdrop-filter: blur(10px);
+      padding: 40px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+
+    /* Botón descargar */
+    .btn-descargar {
+      display: inline-block;
+      padding: 14px 38px;
+      border-radius: 50px;
+      background: #4fd1c5;
+      color: #fff;
+      font-size: 1.2rem;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.35);
+      transition: 0.25s ease;
+    }
+
+    .btn-descargar:hover {
+      transform: scale(1.08);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.45);
+    }
+  </style>
+</head>
+
+<body class="index-page">
+
+  <!-- HEADER -->
+  <header id="header" class="header d-flex align-items-center light-background sticky-top">
+    <div class="container position-relative d-flex align-items-center justify-content-between">
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="funciona.html">¿Cómo Funciona?</a></li>
+          <li><a href="niveles.html">Niveles del Juego</a></li>
+          <li><a href="vistazo.html">Vistazo a la Granja</a></li>
+
+          <li class="dropdown">
+            <a href="#"><span>Propósito</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+              <li><a href="mision.html">Misión</a></li>
+              <li><a href="vision.html">Visión</a></li>
+            </ul>
+          </li>
+
+          <li><a href="descargar.html" class="active">Descargar Documento</a></li>
+          <li><a href="opiniones.html">Opiniones & Comentarios</a></li>
+        </ul>
+
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
+      <div class="header-social-links">
+        <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
+        <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
+        <a href="#" class="tiktok"><i class="bi bi-tiktok"></i></a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <div data-aos="zoom-in" class="doc-box mx-auto text-center max-w-xl">
+      <h2 class="text-white fw-bold mb-3" style="font-size: 2rem;">
+        Documentación del Proyecto
+      </h2>
+
+      <p class="text-white-50 mb-4" style="font-size: 1.1rem;">
+        La documentación de <strong>Granja Numérica</strong> detalla la estructura del juego, 
+        el funcionamiento de cada nivel, los objetivos educativos y la lógica del proyecto.  
+        Es esencial para su evaluación, mantenimiento y futuras mejoras.
+      </p>
+
+      <a href="assets/img/Trabajo Final Mily 2.pdf" download class="btn-descargar">
+        📄 Descargar Documentación
+      </a>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer id="footer" class="footer mt-auto">
+    <div class="container text-center">
+      <p>Proyecto escolar – Granja Numérica</p>
+    </div>
+  </footer>
+
+  <!-- JS -->
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="assets/js/main.js"></script>
+
+  <script>
+    AOS.init();
+  </script>
+
+</body>
+</html>
